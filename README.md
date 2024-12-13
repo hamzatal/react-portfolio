@@ -1,6 +1,6 @@
 # My Portfolio
 
-![React Portfolio Banner](https://via.placeholder.com/1200x400?text=React+Portfolio)
+![React Portfolio Banner](/src/images/b.png)
 
 Welcome to my personal portfolio project! This is a React-based application showcasing my skills, projects, and experience. It's designed to provide a smooth and modern user experience while highlighting my work as a developer.
 
