@@ -28,7 +28,7 @@ body {
     padding: 20px 50px;
     display: flex;
     justify-content: space-between;
-    z-index: 1000; /* Ensure header is above other content */
+    z-index: 1000; 
 }
 
 .logo {
@@ -65,7 +65,7 @@ section.home {
     padding: 0 5%;
     position: relative;
 }
-/* Rest of the CSS remains the same as your original file */
+
 .home-content h1 {
     font-size: 56px;
     font-weight: 700;
@@ -156,7 +156,7 @@ section.home {
 
     .home {
         padding: 0 5%;
-        background-size: 400px; /* Adjust background size for smaller screens */
+        background-size: 400px; 
     }
 
     .home-content h1 {

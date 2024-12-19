@@ -1,16 +1,31 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import '../style/Contact.css';
+import React, { useState } from "react";
+import "../style/Contact.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faEnvelope,
+  faLocationDot,
+  faPhone,
+} from "@fortawesome/free-solid-svg-icons";
+import { faLinkedin, faGithub } from "@fortawesome/free-brands-svg-icons";
 
-const Contact = () => {
+const ContactPage = () => {
+  // Form state
   const [formData, setFormData] = useState({
-    name: '',
+    fullName: '',
     email: '',
     mobile: '',
     subject: '',
     message: ''
   });
+  
+  // Loading and success states
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState({
+    success: false,
+    message: ''
+  });
 
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevState => ({
@@ -19,136 +34,184 @@ const Contact = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  // Handle form submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // You would typically handle form submission here
-    console.log('Form submitted:', formData);
-    // Add your form submission logic (e.g., send to backend, email service)
+    setIsSubmitting(true);
+    
+    try {
+      // Replace with your API endpoint
+      const response = await fetch('YOUR_API_ENDPOINT', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        setSubmitStatus({
+          success: true,
+          message: 'Message sent successfully!'
+        });
+        // Clear form
+        setFormData({
+          fullName: '',
+          email: '',
+          mobile: '',
+          subject: '',
+          message: ''
+        });
+      } else {
+        throw new Error('Failed to send message');
+      }
+    } catch (error) {
+      setSubmitStatus({
+        success: false,
+        message: 'Failed to send message. Please try again.'
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <div className="contact-page">
-      <header className="header">
-        <Link to="/" className="logo">
-          <span style={{color: '#00abf0'}}>H</span>amza.
-        </Link>
-        <nav className="navbar">
-          <Link to="/" className="">Home</Link>
-          <Link to="/about" className="">About Me</Link>
-          <Link to="/myjourney" className="">My Journey</Link>
-          <Link to="/project" className="">My Project</Link>
-          <Link to="/contact" className="active">Contact Me!</Link>
-        </nav>
-      </header>
+    <div className="contact-wrapper">
+      <section className="page-intro">
+        <h1 className="section-divider">
+          Contact <span style={{ color: "#00abf0" }}>Me!</span>
+        </h1>
+      </section>
 
-      <section className="contact">
-        <section >
-          <div className="home-content">
-            <h1 className="hr-lines">
-              Contact <span style={{color: '#00abf0'}}>Me!</span>
-            </h1>
-          </div>
-        </section>
+      <section className="contact-section">
+        <div className="contact-text-area">
+          <div className="text-placeholder"></div>
+        </div>
 
-        <section className="contact-container" id="contact">
+        <div className="contact-form-container">
           <form onSubmit={handleSubmit}>
-            <div className="input-box">
-              <div className="input-field">
-                <input 
-                  type="text" 
-                  name="name"
-                  placeholder="Full NAME" 
-                  value={formData.name}
+            <div className="form-input-row">
+              <div className="form-input-group">
+                <input
+                  type="text"
+                  name="fullName"
+                  value={formData.fullName}
                   onChange={handleChange}
-                  required 
+                  placeholder="Full Name"
+                  required
                 />
-                <span className="focus"></span>
+                <span className="input-focus"></span>
               </div>
-              <div className="input-field">
-                <input 
-                  type="email" 
+              <div className="form-input-group">
+                <input
+                  type="email"
                   name="email"
-                  placeholder="E-Mail" 
                   value={formData.email}
                   onChange={handleChange}
-                  required 
+                  placeholder="E-Mail"
+                  required
                 />
-                <span className="focus"></span>
+                <span className="input-focus"></span>
               </div>
             </div>
 
-            <div className="input-box">
-              <div className="input-field">
-                <input 
-                  type="tel" 
+            <div className="form-input-row">
+              <div className="form-input-group">
+                <input
+                  type="tel"
                   name="mobile"
-                  placeholder="Mobile Number" 
                   value={formData.mobile}
                   onChange={handleChange}
-                  required 
+                  placeholder="Mobile Number"
+                  required
                 />
-                <span className="focus"></span>
+                <span className="input-focus"></span>
               </div>
-              <div className="input-field">
-                <input 
-                  type="text" 
+              <div className="form-input-group">
+                <input
+                  type="text"
                   name="subject"
-                  placeholder="E-Mail Subject" 
                   value={formData.subject}
                   onChange={handleChange}
-                  required 
+                  placeholder="E-Mail Subject"
+                  required
                 />
-                <span className="focus"></span>
+                <span className="input-focus"></span>
               </div>
             </div>
 
-            <div className="textarea-field">
-              <textarea 
+            <div className="form-textarea-group">
+              <textarea
                 name="message"
-                cols="30" 
-                rows="10" 
-                placeholder="Your Message" 
                 value={formData.message}
                 onChange={handleChange}
+                cols="30"
+                rows="10"
+                placeholder="Your Message"
                 required
               ></textarea>
-              <span className="focus"></span>
+              <span className="input-focus"></span>
             </div>
 
-            <div className="btn-box">
-              <button type="submit">Submit</button>
+            {submitStatus.message && (
+              <div className={`submit-status ${submitStatus.success ? 'success' : 'error'}`}>
+                {submitStatus.message}
+              </div>
+            )}
+
+            <div className="form-submit-container">
+              <button 
+                type="submit" 
+                disabled={isSubmitting}
+                className="submit-button"
+              >
+                {isSubmitting ? 'Sending...' : 'Submit'}
+              </button>
             </div>
           </form>
 
-          <div className="icons-container">
+          <div className="contact-social-links">
             <a href="mailto:hamza.t.a.altal@gmail.com">
-              <i className="fas fa-envelope"></i> hamza.t.a.altal@gmail.com
+              <FontAwesomeIcon icon={faEnvelope} /> hamza.t.a.altal@gmail.com
             </a>
             <a href="#">
-              <i className="fas fa-location"></i> Jordan - Amman
+              <FontAwesomeIcon icon={faLocationDot} /> Jordan - Amman
             </a>
-            <a href="https://wa.me/+962772372187" target="_blank" rel="noopener noreferrer">
-              <i className="fas fa-phone"></i> +962772372187
+            <a
+              href="https://wa.me/+962772372187"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FontAwesomeIcon icon={faPhone} /> +962772372187
             </a>
-            <a href="https://www.linkedin.com/in/hamza-tal/" target="_blank" rel="noopener noreferrer">
-              <i className="fab fa-linkedin"></i> hamza_tal
+            <a
+              href="https://www.linkedin.com/in/hamza-tal/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FontAwesomeIcon icon={faLinkedin} /> hamza_tal
             </a>
-            <a href="https://github.com/hamzatal" target="_blank" rel="noopener noreferrer">
-              <i className="fab fa-github"></i> hamzatal
+            <a
+              href="https://github.com/hamzatal"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FontAwesomeIcon icon={faGithub} /> hamzatal
             </a>
           </div>
-        </section>
+        </div>
       </section>
 
-      <footer className="footer">
+      <footer className="page-footer">
         <div className="footer-content">
-          <Link to="/" className="logo">
-            <span style={{color: '#00abf0'}}>H</span>amza. &copy; 2024 All rights reserved.
-          </Link>
+          <a href="#" className="footer-logo">
+            <span style={{ color: "#00abf0" }}>H</span>amza. &copy; 2024 All
+            rights reserved.
+          </a>
         </div>
       </footer>
     </div>
   );
 };
 
-export default Contact;
+export default ContactPage;
